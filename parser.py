@@ -6,6 +6,11 @@ import pdfplumber
 import pathlib
 
 
+# The code here is pretty ugly, but functional;
+# It was written to get the job done, not to
+# be pretty.
+
+
 START_PAGE = 2
 OUTPUT_DIR = pathlib.Path.cwd() / "output"
 INPUT_NAME = "input.pdf"
@@ -19,6 +24,7 @@ def create_image(title, data, caption, date: datetime.datetime):
     with open(title, "wb") as file:
         file.write(data)
 
+    # Add a caption
     subprocess.run([
         "exiftool",
         "-overwrite_original",
@@ -26,6 +32,7 @@ def create_image(title, data, caption, date: datetime.datetime):
         f'{title.as_posix()}'
     ])
 
+    # Update the modify date of the file
     cmd = [
         "touch",
         "-c",
