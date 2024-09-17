@@ -3,12 +3,7 @@ import re
 import datetime
 import subprocess
 import pdfplumber
-from pdfplumber import page
 import pathlib
-
-# import subprocess
-#
-# subprocess.run(["ls", "-l"])
 
 
 START_PAGE = 2
@@ -20,8 +15,9 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def create_image(title, data, caption, date: datetime.datetime):
     title = OUTPUT_DIR / title
-    #with open(title, "wb") as file:
-    #    file.write(data)
+
+    with open(title, "wb") as file:
+        file.write(data)
 
     subprocess.run([
         "exiftool",
@@ -82,11 +78,11 @@ class Entry:
 
 def main(input_name, start_page):
     reader = pypdf.PdfReader(input_name)
-    plumberReader = pdfplumber.open(input_name)
+    plumber_reader = pdfplumber.open(input_name)
 
     entry = Entry()
 
-    for page, plumberPage in zip(reader.pages[start_page:], plumberReader.pages[start_page:]):
+    for page, plumberPage in zip(reader.pages[start_page:], plumber_reader.pages[start_page:]):
         page: pypdf.PageObject
         plumberPage: pdfplumber.page.Page
 
@@ -120,6 +116,7 @@ def main(input_name, start_page):
             print(entry)
             print(entry.note)
             print(entry.author)
+
             for picture_name, picture in entry.pictures.items():
                 create_image(f"{entry.entry_name} - {picture_name}",
                              picture.data,
